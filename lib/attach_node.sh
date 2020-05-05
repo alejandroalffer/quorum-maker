@@ -113,7 +113,8 @@ function createStartNodeScript(){
 }
 
 function createSetupScript() {
-    echo 'NODENAME='${sNode} > ${sNode}/setup.conf
+    echo 'CONTEXT_PATH='$contextPath > ${sNode}/setup.conf
+    echo 'NODENAME='${sNode} >> ${sNode}/setup.conf
     echo 'WHISPER_PORT='${wPort} >> ${sNode}/setup.conf
     echo 'RAFT_PORT='${raPort} >> ${sNode}/setup.conf
     echo 'RPC_PORT='${rPort} >> ${sNode}/setup.conf

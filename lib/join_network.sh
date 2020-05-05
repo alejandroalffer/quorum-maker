@@ -179,7 +179,8 @@ function copyScripts(){
 }
 
 function createSetupConf() {
-    echo 'NODENAME='${sNode} > ${sNode}/setup.conf
+    echo 'CONTEXT_PATH='$contextPath > ${sNode}/setup.conf
+    echo 'NODENAME='${sNode} >> ${sNode}/setup.conf
     echo 'MASTER_IP='${pMainIp} >> ${sNode}/setup.conf
     echo 'WHISPER_PORT='${wPort} >> ${sNode}/setup.conf
     echo 'RAFT_PORT='${raPort} >> ${sNode}/setup.conf

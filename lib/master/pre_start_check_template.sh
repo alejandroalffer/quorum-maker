@@ -92,8 +92,9 @@ function readInputs(){
     fi
     role="Unassigned"
 	
-    #append values in Setup.conf file 
-    echo 'CURRENT_IP='$pCurrentIp > ./setup.conf
+    #append values in Setup.conf file
+    echo 'CONTEXT_PATH='$contextPath > ./setup.conf
+    echo 'CURRENT_IP='$pCurrentIp >> ./setup.conf
     echo 'RPC_PORT='$rPort >> ./setup.conf
     echo 'WHISPER_PORT='$wPort >> ./setup.conf
     echo 'CONSTELLATION_PORT='$cPort >> ./setup.conf
@@ -168,7 +169,7 @@ function main(){
         fi
         
         publickey=$(cat node/keys/$nodeName.pub)
-        uiUrl="http://localhost:"$tgoPort"/"
+        uiUrl="http://localhost:"${tgoPort}${contextPath}"/"
         echo 'PUBKEY='$publickey >> ./setup.conf
 
         echo -e '****************************************************************************************************************'

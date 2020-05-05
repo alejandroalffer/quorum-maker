@@ -17,7 +17,8 @@ function generateNodeConf(){
 }
 
 function generateSetupConf(){
-    echo 'NODENAME='node$1 > $projectName/node$1/setup.conf
+    echo 'CONTEXT_PATH='$contextPath > $projectName/node$1/setup.conf
+    echo 'NODENAME='node$1 >> $projectName/node$1/setup.conf
     echo 'CURRENT_IP='${DOCKER_NETWORK_IP}$(($1+1)) >> $projectName/node$1/setup.conf
     echo 'THIS_NODEMANAGER_PORT=22004' >> $projectName/node$1/setup.conf
     echo 'RPC_PORT=22000' >> $projectName/node$1/setup.conf    

@@ -5,7 +5,7 @@ source node/common.sh
 # Function to send post call to go endpoint joinNode 
 function updateNmcAddress(){
         
-    url=http://${MASTER_IP}:${MAIN_NODEMANAGER_PORT}/peer
+    url=http://${MASTER_IP}:${MAIN_NODEMANAGER_PORT}${CONTEXT_PATH}/peer
 
     response=$(curl -s -X POST \
     --max-time 310 ${url} \
@@ -34,10 +34,12 @@ function requestGenesis(){
     pending="Pending user response"
     rejected="Access denied"
     timeout="Response Timed Out"
-    urlG=http://${MASTER_IP}:${MAIN_NODEMANAGER_PORT}/genesis
+    urlG=http://${MASTER_IP}:${MAIN_NODEMANAGER_PORT}${CONTEXT_PATH}/genesis
 
     echo -e $RED'\nJoin Request sent to '$MASTER_IP'. Waiting for approval...'$COLOR_END
 
+    echo "Genesis URL = " $urlG
+    
     response=$(curl -s -X POST \
     --max-time 310 ${urlG} \
     -H "content-type: application/json" \
@@ -64,19 +66,14 @@ function requestGenesis(){
         echo "Unknown Error. Please check log. Program exiting"
         exit
     else
-        echo $response > input1.json
-	declare -A replyMap
-	while IFS="=" read -r key value
-	do
-    	replyMap[$key]="$value"
-	done < <(jq -r "to_entries|map(\"\(.key)=\(.value|tostring)\")|.[]" input1.json)
-
-    MASTER_CONSTELLATION_PORT=${replyMap[contstellation-port]}
-   
+        
+	MASTER_CONSTELLATION_PORT=$(echo "$response" | jq -r '."contstellation-port"')
 	echo 'MASTER_CONSTELLATION_PORT='$MASTER_CONSTELLATION_PORT >>  setup.conf
-	echo 'NETWORK_ID='${replyMap[netID]} >>  setup.conf
-	echo ${replyMap[genesis]}  > node/genesis.json
-        rm -f input1.json
+
+	NETWORK_ID=$(echo "$response" | jq -r '.netID')
+	echo 'NETWORK_ID='$NETWORK_ID >>  setup.conf
+	
+	echo "$response" | jq -r '.genesis' > node/genesis.json
     fi
 }
 
@@ -129,7 +126,7 @@ function main(){
         role="Unassigned"
         echo 'ROLE='$role >> setup.conf
 
-        uiUrl="http://localhost:"$THIS_NODEMANAGER_PORT"/"
+        uiUrl="http://localhost:"${THIS_NODEMANAGER_PORT}${CONTEXT_PATH}"/"
 
         echo -e '****************************************************************************************************************'
 
